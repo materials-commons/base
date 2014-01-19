@@ -4,7 +4,58 @@ import (
 	"fmt"
 	r "github.com/dancannon/gorethink"
 	"github.com/materials-commons/contrib/schema"
+	"reflect"
 )
+
+type Model struct {
+	schema interface{}
+	table  string
+}
+
+type Query struct {
+	*Model
+	r.RqlTerm
+	session *r.Session
+}
+
+func (m *Model) Get(id string, session *r.Session) (interface{}, error) {
+	result := reflect.New(reflect.TypeOf(m.schema))
+	err := GetItem(id, m.table, session, &result)
+	return result.Interface(), err
+}
+
+func (m *Model) Q(session *r.Session) *Query {
+	return &Query{
+		Model:   m,
+		session: session,
+		RqlTerm: r.Table(m.table),
+	}
+}
+
+func (q *Query) Update() error {
+	return nil
+}
+
+func (q *Query) Insert() error {
+	return nil
+}
+
+func (q *Query) Delete() error {
+	return nil
+}
+
+/*
+func (q *Query) Exec() (id string, err error) {
+	rw, err := q.RunWrite(q.session)
+	switch {
+	case err != nil:
+		return err
+
+	}
+}
+*/
+
+/* ************************************************************** */
 
 func MatchingUserGroups(query r.RqlTerm, session *r.Session) ([]schema.UserGroup, error) {
 	var results []schema.UserGroup
