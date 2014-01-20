@@ -31,9 +31,6 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestGetUserModel(t *testing.T) {
-	if true {
-		return
-	}
 	m := &Model{
 		schema: schema.User{},
 		table: "users",
@@ -43,8 +40,10 @@ func TestGetUserModel(t *testing.T) {
 	fmt.Println("err =", err)
 	fmt.Printf("%#v\n", u)
 
-	var users []schema.User
-	err = m.Q(session).All(m.Table(), users)
+	users, err := m.Q(session).All(m.Table())
+	for _, u2 := range users.([]*schema.User) {
+		fmt.Printf("#%v\n", u2)
+	}
 	fmt.Println(err)
 	fmt.Printf("%#v\n", users)
 }

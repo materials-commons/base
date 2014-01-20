@@ -42,42 +42,22 @@ func (m *Model) Table() r.RqlTerm {
 	return r.Table(m.table)
 }
 
-func (q *Query) All(query r.RqlTerm, results interface{}) error {
-	resultsType := reflect.ValueOf(results)
-	var _ = resultsType
-	//if resultsType.Kind() != reflect.Ptr || (resultsType.Elem().Kind() != reflect.Slice && resultsType.Elem().Kind() != reflect.Interface) {
-	//	fmt.Printf("Bad type for results")
-		//return fmt.Errorf("Bad type for results")
-	//}
-	/*
-	rows, err := query.Run(q.Session)
-	if err != nil {
-		return err
-	}
-*/
-	//slicev := resultsType.Interface()
-	//fmt.Printf("Here %#v", slicev)
+func (q *Query) All(query r.RqlTerm) (interface{}, error) {
 	elementType := reflect.TypeOf(q.schema)
-	//fmt.Printf("%T\n", elementType)
-	//resultsSlice := reflect.SliceOf(elementType.Elem())
-	//fmt.Printf("%T\n", resultsSlice)
-
 	rows, err := query.Run(q.Session)
+	var results []interface{}
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer rows.Close()
-	i := 0
 	for rows.Next() {
 		var result = reflect.New(elementType)
 		rows.Scan(result.Interface())
-		//results = append(results, result.Interface())
-		//results = append(results, result.Interface())
-		i++
+		results = append(results, result.Interface())
 	}
 
 	fmt.Printf("%#v", results)
-	return nil
+	return results, nil
 }
 
 func (q *Query) Update() error {
