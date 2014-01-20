@@ -3,6 +3,8 @@ package model
 import (
 	r "github.com/dancannon/gorethink"
 	"testing"
+	"github.com/materials-commons/contrib/schema"
+	"fmt"
 )
 
 var (
@@ -25,5 +27,50 @@ func TestGetUser(t *testing.T) {
 
 	if u.ApiKey != "472abe203cd411e3a280ac162d80f1bf" {
 		t.Fatalf("ApiKey does not match, got %s", u.ApiKey)
+	}
+}
+
+func TestGetUserModel(t *testing.T) {
+	if true {
+		return
+	}
+	m := &Model{
+		schema: schema.User{},
+		table: "users",
+	}
+
+	u, err := m.Q(session).ById("gtarcea@umich.edu")
+	fmt.Println("err =", err)
+	fmt.Printf("%#v\n", u)
+
+	var users []schema.User
+	err = m.Q(session).All(m.Table(), users)
+	fmt.Println(err)
+	fmt.Printf("%#v\n", users)
+}
+
+
+func TestArray(t *testing.T) {
+	items := make([]int, 3)
+	fillIt(items)
+	fmt.Printf("%#v", items)
+}
+
+func fillIt(results []int) {
+	fmt.Println("cap", cap(results))
+	fmt.Println("len", len(results))
+	for i := 0; i < 5; i++ {
+		fmt.Println(i)
+		if i >= len(results) {
+			fmt.Println("Doing append")
+			results = append(results, i)
+			fmt.Println("Past append")
+			fmt.Println("new cap", cap(results))
+			fmt.Println("new len", len(results))
+		} else {
+			fmt.Println("Assigning to results", i)
+			results[i] = i
+		}
+		//results = append(results, i)
 	}
 }

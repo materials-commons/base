@@ -14,22 +14,70 @@ type Model struct {
 
 type Query struct {
 	*Model
-	r.RqlTerm
-	session *r.Session
+	Rql r.RqlTerm
+	Session *r.Session
 }
 
-func (m *Model) Get(id string, session *r.Session) (interface{}, error) {
-	result := reflect.New(reflect.TypeOf(m.schema))
-	err := GetItem(id, m.table, session, &result)
+func (q *Query) ById(id string) (interface{}, error) {
+	result := reflect.New(reflect.TypeOf(q.schema))
+	err := GetItem(id, q.table, q.Session, result.Interface())
 	return result.Interface(), err
 }
 
 func (m *Model) Q(session *r.Session) *Query {
 	return &Query{
 		Model:   m,
-		session: session,
-		RqlTerm: r.Table(m.table),
+		Session: session,
+		Rql: r.Table(m.table),
 	}
+}
+
+func (q *Query) Row(query r.RqlTerm) (interface{}, error) {
+	result := reflect.New(reflect.TypeOf(q.schema))
+	err := GetRow(query, q.Session, result.Interface())
+	return result.Interface(), err
+}
+
+func (m *Model) Table() r.RqlTerm {
+	return r.Table(m.table)
+}
+
+func (q *Query) All(query r.RqlTerm, results interface{}) error {
+	resultsType := reflect.ValueOf(results)
+	var _ = resultsType
+	//if resultsType.Kind() != reflect.Ptr || (resultsType.Elem().Kind() != reflect.Slice && resultsType.Elem().Kind() != reflect.Interface) {
+	//	fmt.Printf("Bad type for results")
+		//return fmt.Errorf("Bad type for results")
+	//}
+	/*
+	rows, err := query.Run(q.Session)
+	if err != nil {
+		return err
+	}
+*/
+	//slicev := resultsType.Interface()
+	//fmt.Printf("Here %#v", slicev)
+	elementType := reflect.TypeOf(q.schema)
+	//fmt.Printf("%T\n", elementType)
+	//resultsSlice := reflect.SliceOf(elementType.Elem())
+	//fmt.Printf("%T\n", resultsSlice)
+
+	rows, err := query.Run(q.Session)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	i := 0
+	for rows.Next() {
+		var result = reflect.New(elementType)
+		rows.Scan(result.Interface())
+		//results = append(results, result.Interface())
+		//results = append(results, result.Interface())
+		i++
+	}
+
+	fmt.Printf("%#v", results)
+	return nil
 }
 
 func (q *Query) Update() error {
