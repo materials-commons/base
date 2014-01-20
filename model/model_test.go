@@ -40,12 +40,17 @@ func TestGetUserModel(t *testing.T) {
 	fmt.Println("err =", err)
 	fmt.Printf("%#v\n", u)
 
-	users, err := m.Q(session).All(m.Table())
-	for _, u2 := range users.([]*schema.User) {
-		fmt.Printf("#%v\n", u2)
+	if true {
+		return
 	}
-	fmt.Println(err)
-	fmt.Printf("%#v\n", users)
+
+	var users []schema.User
+	err = m.Q(session).All(m.Table(), &users)
+	for _, user := range users {
+		fmt.Printf("\n\nuser = %#v\n", user)
+	}
+	//fmt.Println(err)
+	//fmt.Printf("%#v\n", users)
 }
 
 

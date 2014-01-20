@@ -35,29 +35,50 @@ func (m *Model) Q(session *r.Session) *Query {
 func (q *Query) Row(query r.RqlTerm) (interface{}, error) {
 	result := reflect.New(reflect.TypeOf(q.schema))
 	err := GetRow(query, q.Session, result.Interface())
-	return result.Interface(), err
+	return result.Elem(), err
 }
 
 func (m *Model) Table() r.RqlTerm {
 	return r.Table(m.table)
 }
 
-func (q *Query) All(query r.RqlTerm) (interface{}, error) {
+func (q *Query) All(query r.RqlTerm, results interface{}) error {
 	elementType := reflect.TypeOf(q.schema)
+	resultsValue := reflect.ValueOf(results)
+	if resultsValue.Kind() != reflect.Ptr || (resultsValue.Elem().Kind() != reflect.Slice && resultsValue.Elem().Kind() != reflect.Interface) {
+		return fmt.Errorf("Bad type for results")
+	}
+	
+	sliceValue := resultsValue.Elem()
+
+	if resultsValue.Elem().Kind() == reflect.Interface {
+		sliceValue = sliceValue.Elem().Slice(0, sliceValue.Cap())
+	} else {
+		sliceValue = sliceValue.Slice(0, sliceValue.Cap())
+	}
+	
 	rows, err := query.Run(q.Session)
-	var results []interface{}
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer rows.Close()
+
+	i := 0
 	for rows.Next() {
 		var result = reflect.New(elementType)
 		rows.Scan(result.Interface())
-		results = append(results, result.Interface())
+		if sliceValue.Len() == i {
+			sliceValue = reflect.Append(sliceValue, result.Elem())
+			sliceValue = sliceValue.Slice(0, sliceValue.Cap())
+		} else {
+			sliceValue.Index(i).Set(result.Elem())
+		}
+		i++
 	}
 
+	resultsValue.Elem().Set(sliceValue.Slice(0, i))
 	fmt.Printf("%#v", results)
-	return results, nil
+	return nil
 }
 
 func (q *Query) Update() error {
