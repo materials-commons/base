@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"strings"
 	"time"
 )
 
@@ -114,7 +113,6 @@ type DataDir struct {
 func NewDataDir(name, access, owner, parent string) DataDir {
 	now := time.Now()
 	return DataDir{
-		Id:        owner + "$" + strings.Replace(name, "/", "_", -1),
 		Owner:     owner,
 		Name:      name,
 		Parent:    parent,
