@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	r "github.com/dancannon/gorethink"
+	"github.com/materials-commons/contrib/mc"
 	"github.com/materials-commons/contrib/schema"
 	"reflect"
 )
@@ -14,7 +15,7 @@ type Model struct {
 
 type Query struct {
 	*Model
-	Rql r.RqlTerm
+	Rql     r.RqlTerm
 	Session *r.Session
 }
 
@@ -28,7 +29,7 @@ func (m *Model) Q(session *r.Session) *Query {
 	return &Query{
 		Model:   m,
 		Session: session,
-		Rql: r.Table(m.table),
+		Rql:     r.Table(m.table),
 	}
 }
 
@@ -48,7 +49,7 @@ func (q *Query) All(query r.RqlTerm, results interface{}) error {
 	if resultsValue.Kind() != reflect.Ptr || (resultsValue.Elem().Kind() != reflect.Slice && resultsValue.Elem().Kind() != reflect.Interface) {
 		return fmt.Errorf("Bad type for results")
 	}
-	
+
 	sliceValue := resultsValue.Elem()
 
 	if resultsValue.Elem().Kind() == reflect.Interface {
@@ -56,7 +57,7 @@ func (q *Query) All(query r.RqlTerm, results interface{}) error {
 	} else {
 		sliceValue = sliceValue.Slice(0, sliceValue.Cap())
 	}
-	
+
 	rows, err := query.Run(q.Session)
 	if err != nil {
 		return err
@@ -162,7 +163,7 @@ func GetItem(id, table string, session *r.Session, obj interface{}) error {
 	case err != nil:
 		return err
 	case result.IsNil():
-		return fmt.Errorf("Unknown Id: %s", id)
+		return mc.ErrNotFound
 	default:
 		err := result.Scan(obj)
 		return err
@@ -175,7 +176,7 @@ func GetRow(query r.RqlTerm, session *r.Session, obj interface{}) error {
 	case err != nil:
 		return err
 	case result.IsNil():
-		return fmt.Errorf("Bad query")
+		return mc.ErrNotFound
 	default:
 		err := result.Scan(obj)
 		return err

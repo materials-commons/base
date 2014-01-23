@@ -1,10 +1,10 @@
 package model
 
 import (
-	r "github.com/dancannon/gorethink"
-	"testing"
-	"github.com/materials-commons/contrib/schema"
 	"fmt"
+	r "github.com/dancannon/gorethink"
+	"github.com/materials-commons/contrib/schema"
+	"testing"
 )
 
 var (
@@ -33,7 +33,7 @@ func TestGetUser(t *testing.T) {
 func TestGetUserModel(t *testing.T) {
 	m := &Model{
 		schema: schema.User{},
-		table: "users",
+		table:  "users",
 	}
 
 	u, err := m.Q(session).ById("gtarcea@umich.edu")
@@ -52,7 +52,6 @@ func TestGetUserModel(t *testing.T) {
 	//fmt.Println(err)
 	//fmt.Printf("%#v\n", users)
 }
-
 
 func TestArray(t *testing.T) {
 	items := make([]int, 3)
