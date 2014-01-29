@@ -52,6 +52,7 @@ type DataFile struct {
 	MetaTags        []string  `gorethink:"metatags"`
 	DataDirs        []string  `gorethink:"datadirs"`
 	Parent          string    `gorethink:"parent"`
+	UsesID          string    `gorethink:"usesid"`
 }
 
 func NewDataFile(name, access, owner string) DataFile {
