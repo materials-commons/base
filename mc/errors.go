@@ -7,5 +7,5 @@ import (
 var (
 	ErrNotFound       = errors.New("Not found")
 	ErrInvalidRequest = errors.New("Invalid Request")
-	ErrExists = errors.New("Exists")
+	ErrExists         = errors.New("Exists")
 )
