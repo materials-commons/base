@@ -7,6 +7,8 @@ import (
 	"testing"
 )
 
+var _ = fmt.Println
+
 var (
 	session, _ = r.Connect(map[string]interface{}{
 		"address":  "localhost:30815",
@@ -36,44 +38,35 @@ func TestGetUserModel(t *testing.T) {
 		table:  "users",
 	}
 
-	u, err := m.Q(session).ById("gtarcea@umich.edu")
-	fmt.Println("err =", err)
-	fmt.Printf("%#v\n", u)
-
-	if true {
-		return
+	_, err := m.Q(session).ById("gtarcea@umich.edu")
+	if err != nil {
+		t.Errorf("Lookup by Id failed: %s", err)
 	}
 
 	var users []schema.User
 	err = m.Q(session).All(m.Table(), &users)
-	for _, user := range users {
-		fmt.Printf("\n\nuser = %#v\n", user)
+	if err != nil {
+		t.Errorf("Lookup all users failed: %s", err)
 	}
-	//fmt.Println(err)
-	//fmt.Printf("%#v\n", users)
+	if len(users) == 0 {
+		t.Errorf("No users returned when looking up all users")
+	}
 }
 
-func TestArray(t *testing.T) {
-	items := make([]int, 3)
-	fillIt(items)
-	fmt.Printf("%#v", items)
-}
+func TestGetRows(t *testing.T) {
+	var users []schema.User
+	rql := r.Table("users")
+	err := GetRows(rql, session, &users)
+	if err != nil {
+		t.Errorf("GetRows all users failed: %s", err)
+	}
 
-func fillIt(results []int) {
-	fmt.Println("cap", cap(results))
-	fmt.Println("len", len(results))
-	for i := 0; i < 5; i++ {
-		fmt.Println(i)
-		if i >= len(results) {
-			fmt.Println("Doing append")
-			results = append(results, i)
-			fmt.Println("Past append")
-			fmt.Println("new cap", cap(results))
-			fmt.Println("new len", len(results))
-		} else {
-			fmt.Println("Assigning to results", i)
-			results[i] = i
-		}
-		//results = append(results, i)
+	if len(users) == 0 {
+		t.Errorf("Users length == 0")
+	}
+
+	err = GetRows(rql, session, users)
+	if err == nil {
+		t.Errorf("Unexpected nil error when passing in bad parameter")
 	}
 }

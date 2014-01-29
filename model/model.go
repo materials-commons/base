@@ -78,7 +78,6 @@ func (q *Query) All(query r.RqlTerm, results interface{}) error {
 	}
 
 	resultsValue.Elem().Set(sliceValue.Slice(0, i))
-	fmt.Printf("%#v", results)
 	return nil
 }
 
@@ -181,6 +180,42 @@ func GetRow(query r.RqlTerm, session *r.Session, obj interface{}) error {
 		err := result.Scan(obj)
 		return err
 	}
+}
+
+func GetRows(query r.RqlTerm, session *r.Session, results interface{}) error {
+	resultsValue := reflect.ValueOf(results)
+	if resultsValue.Kind() != reflect.Ptr || (resultsValue.Elem().Kind() != reflect.Slice && resultsValue.Elem().Kind() != reflect.Interface) {
+		return fmt.Errorf("Bad type for results")
+	}
+
+	sliceValue := resultsValue.Elem()
+
+	if resultsValue.Elem().Kind() == reflect.Interface {
+		sliceValue = sliceValue.Elem().Slice(0, sliceValue.Cap())
+	} else {
+		sliceValue = sliceValue.Slice(0, sliceValue.Cap())
+	}
+	elementType := sliceValue.Type().Elem()
+	rows, err := query.Run(session)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	i := 0
+	for rows.Next() {
+		var result = reflect.New(elementType)
+		rows.Scan(result.Interface())
+		if sliceValue.Len() == i {
+			sliceValue = reflect.Append(sliceValue, result.Elem())
+			sliceValue = sliceValue.Slice(0, sliceValue.Cap())
+		} else {
+			sliceValue.Index(i).Set(result.Elem())
+		}
+		i++
+	}
+
+	resultsValue.Elem().Set(sliceValue.Slice(0, i))
+	return nil
 }
 
 func Delete(table, id string, session *r.Session) error {
