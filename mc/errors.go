@@ -32,7 +32,7 @@ var errorCodeMapping = map[ErrorCode]error{
 	ErrorCodeInvalid:  ErrInvalid,
 	ErrorCodeExists:   ErrExists,
 	ErrorCodeNoAccess: ErrNoAccess,
-	ErrorCodeCreate: ErrCreate,
+	ErrorCodeCreate:   ErrCreate,
 	ErrorCodeInternal: ErrInternal,
 }
 
@@ -45,7 +45,7 @@ var errorMapping = map[string]ErrorCode{
 	ErrInvalid.Error():  ErrorCodeInvalid,
 	ErrExists.Error():   ErrorCodeExists,
 	ErrNoAccess.Error(): ErrorCodeNoAccess,
-	ErrCreate.Error(): ErrorCodeCreate,
+	ErrCreate.Error():   ErrorCodeCreate,
 	ErrInternal.Error(): ErrorCodeInternal,
 }
 
