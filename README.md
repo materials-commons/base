@@ -1,4 +1,4 @@
-contrib
+base
 =======
 
-Contributions and shared packages
+Base packages for materials-commons.

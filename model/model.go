@@ -3,8 +3,8 @@ package model
 import (
 	"fmt"
 	r "github.com/dancannon/gorethink"
-	"github.com/materials-commons/contrib/mc"
-	"github.com/materials-commons/contrib/schema"
+	"github.com/materials-commons/base/mc"
+	"github.com/materials-commons/base/schema"
 	"reflect"
 )
 
