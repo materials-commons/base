@@ -152,3 +152,10 @@ func NewUser(name, email, password, apikey string) User {
 		MTime:     now,
 	}
 }
+
+// Join table structures
+type Project2DataDir struct {
+	Id        string `gorethink:"id,omitempty" db:"-"`
+	ProjectID string `gorethink:"project_id" db:"project_id"`
+	DataDirID string `gorethink:"datadir_id" db:"datadir_id"`
+}
