@@ -153,9 +153,27 @@ func NewUser(name, email, password, apikey string) User {
 	}
 }
 
-// Join table structures
+// Join tables
 type Project2DataDir struct {
 	Id        string `gorethink:"id,omitempty" db:"-"`
 	ProjectID string `gorethink:"project_id" db:"project_id"`
 	DataDirID string `gorethink:"datadir_id" db:"datadir_id"`
+}
+
+// Denorm tables
+type DataFileEntry struct {
+	Id        string    `gorethink:"id"`
+	Name      string    `gorethink:"name"`
+	Owner     string    `gorethink:"owner"`
+	Birthtime time.Time `gorethink:"birthtime"`
+	Checksum  string    `gorethink:"checksum"`
+	Size      int64     `gorethink:"size"`
+}
+
+type DataDirDenorm struct {
+	Id        string          `gorethink:"id"`
+	Name      string          `gorethink:"name"`
+	Owner     string          `gorethink:"owner"`
+	Birthtime time.Time       `gorethink:"birthtime"`
+	DataFiles []DataFileEntry `gorethink:"datafiles"`
 }
