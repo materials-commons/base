@@ -39,7 +39,7 @@ type DataFile struct {
 	Tags            []string  `gorethink:"tags" db:"-"`
 	MyTags          []string  `gorethink:"mytags" db:"-"`
 	Description     string    `gorethink:"description" db:"-"`
-	Notes           []string  `gorethink:"description" db:"-"`
+	Notes           []string  `gorethink:"notes" db:"-"`
 	Owner           string    `gorethink:"owner" db:"-"`
 	Process         string    `gorethink:"process" db:"-"`
 	Machine         string    `gorethink:"machine" db:"-"`
