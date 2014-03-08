@@ -38,13 +38,13 @@ func TestGetUserModel(t *testing.T) {
 		table:  "users",
 	}
 
-	_, err := m.Q(session).ById("gtarcea@umich.edu")
+	_, err := m.Qs(session).ById("gtarcea@umich.edu")
 	if err != nil {
 		t.Errorf("Lookup by Id failed: %s", err)
 	}
 
 	var users []schema.User
-	err = m.Q(session).All(m.Table(), &users)
+	err = m.Qs(session).Rows(m.Table(), &users)
 	if err != nil {
 		t.Errorf("Lookup all users failed: %s", err)
 	}

@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	r "github.com/dancannon/gorethink"
+	"github.com/materials-commons/base/db"
 	"github.com/materials-commons/base/mc"
 	"github.com/materials-commons/base/schema"
 	"reflect"
@@ -25,7 +26,15 @@ func (q *Query) ById(id string) (interface{}, error) {
 	return result.Interface(), err
 }
 
-func (m *Model) Q(session *r.Session) *Query {
+func (m *Model) Q() *Query {
+	session, err := db.RSession()
+	if err != nil {
+		panic("Unable to connect to database")
+	}
+	return m.Qs(session)
+}
+
+func (m *Model) Qs(session *r.Session) *Query {
 	return &Query{
 		Model:   m,
 		Session: session,
@@ -33,17 +42,20 @@ func (m *Model) Q(session *r.Session) *Query {
 	}
 }
 
-func (q *Query) Row(query r.RqlTerm) (interface{}, error) {
-	result := reflect.New(reflect.TypeOf(q.schema))
-	err := GetRow(query, q.Session, result.Interface())
-	return result.Elem(), err
+func (q *Query) Row(query r.RqlTerm, obj interface{}) error {
+	err := GetRow(query, q.Session, obj)
+	return err
 }
 
 func (m *Model) Table() r.RqlTerm {
 	return r.Table(m.table)
 }
 
-func (q *Query) All(query r.RqlTerm, results interface{}) error {
+func (m *Model) T() r.RqlTerm {
+	return r.Table(m.table)
+}
+
+func (q *Query) Rows(query r.RqlTerm, results interface{}) error {
 	elementType := reflect.TypeOf(q.schema)
 	resultsValue := reflect.ValueOf(results)
 	if resultsValue.Kind() != reflect.Ptr || (resultsValue.Elem().Kind() != reflect.Slice && resultsValue.Elem().Kind() != reflect.Interface) {
