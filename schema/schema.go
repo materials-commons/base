@@ -4,8 +4,9 @@ import (
 	"time"
 )
 
+// UserGroup models user groups and access permissions to user data.
 type UserGroup struct {
-	Id          string    `gorethink:"id,omitempty"`
+	ID          string    `gorethink:"id,omitempty"`
 	Owner       string    `gorethink:"owner"`
 	Name        string    `gorethink:"name"`
 	Description string    `gorethink:"description"`
@@ -15,6 +16,7 @@ type UserGroup struct {
 	Users       []string  `gorethink:"users"`
 }
 
+// NewUserGroup creates a new UserGroup instance.
 func NewUserGroup(owner, name string) UserGroup {
 	now := time.Now()
 	return UserGroup{
@@ -27,8 +29,11 @@ func NewUserGroup(owner, name string) UserGroup {
 	}
 }
 
+// DataFile models a user datafile. A datafile is an abstract representation of
+// a real file plus the attributes that we need in our model for access, and other
+// metadata.
 type DataFile struct {
-	Id              string    `gorethink:"id,omitempty"`
+	ID              string    `gorethink:"id,omitempty"`
 	Name            string    `gorethink:"name"`
 	Access          string    `gorethink:"access" db:"-"`
 	MarkedForReview bool      `gorethink:"marked_for_review" db:"-"`
@@ -55,6 +60,7 @@ type DataFile struct {
 	UsesID          string    `gorethink:"usesid" db:"-"`
 }
 
+// NewDataFile creates a new DataFile instance.
 func NewDataFile(name, access, owner string) DataFile {
 	now := time.Now()
 	return DataFile{
@@ -68,8 +74,10 @@ func NewDataFile(name, access, owner string) DataFile {
 	}
 }
 
+// Project models a users project. A project is an instance of a users workspace
+// where they conduct their research. A project can be shared.
 type Project struct {
-	Id          string    `gorethink:"id,omitempty"`
+	ID          string    `gorethink:"id,omitempty"`
 	Name        string    `gorethink:"name"`
 	Description string    `gorethink:"description"`
 	DataDir     string    `gorethink:"datadir" db:"-"`
@@ -82,6 +90,7 @@ type Project struct {
 	MyTags      []string  `gorethink:"mytags" db:"-"`
 }
 
+// NewProject creates a new Project instance.
 func NewProject(name, datadir, owner string) Project {
 	now := time.Now()
 	return Project{
@@ -93,8 +102,10 @@ func NewProject(name, datadir, owner string) Project {
 	}
 }
 
+// DataDir models a directory of user files. A datadir is an abstract representation
+// of a users file system directory plus the metadata needed by the system.
 type DataDir struct {
-	Id              string    `gorethink:"id,omitempty"`
+	ID              string    `gorethink:"id,omitempty"`
 	Access          string    `gorethink:"access" db:"-"`
 	Owner           string    `gorethink:"owner" db:"-"`
 	MarkedForReview bool      `gorethink:"marked_for_review" db:"-"`
@@ -111,6 +122,7 @@ type DataDir struct {
 	ATime           time.Time `gorethink:"atime"`
 }
 
+// NewDataDir creates a new DataDir instance.
 func NewDataDir(name, access, owner, parent string) DataDir {
 	now := time.Now()
 	return DataDir{
@@ -125,13 +137,14 @@ func NewDataDir(name, access, owner, parent string) DataDir {
 	}
 }
 
+// User models a user in the system.
 type User struct {
-	Id          string    `gorethink:"id,omitempty"`
+	ID          string    `gorethink:"id,omitempty"`
 	Name        string    `gorethink:"name"`
 	Email       string    `gorethink:"email"`
 	Fullname    string    `gorethink:"fullname"`
 	Password    string    `gorethink:"password"`
-	ApiKey      string    `gorethink:"apikey"`
+	APIKey      string    `gorethink:"apikey"`
 	Birthtime   time.Time `gorethink:"birthtime"`
 	MTime       time.Time `gorethink:"mtime"`
 	Avatar      string    `gorethink:"avatar"`
@@ -141,28 +154,29 @@ type User struct {
 	Notes       []string  `gorethink:"notes"`
 }
 
+// NewUser creates a new User instance.
 func NewUser(name, email, password, apikey string) User {
 	now := time.Now()
 	return User{
 		Name:      name,
 		Email:     email,
 		Password:  password,
-		ApiKey:    apikey,
+		APIKey:    apikey,
 		Birthtime: now,
 		MTime:     now,
 	}
 }
 
-// Join tables
+// Project2DataDir is a join table that maps projects to their datadirs.
 type Project2DataDir struct {
-	Id        string `gorethink:"id,omitempty" db:"-"`
+	ID        string `gorethink:"id,omitempty" db:"-"`
 	ProjectID string `gorethink:"project_id" db:"project_id"`
 	DataDirID string `gorethink:"datadir_id" db:"datadir_id"`
 }
 
-// Denorm tables
+// DataFileEntry is a denormalized instance of a datafile used in the datadirs_denorm table.
 type DataFileEntry struct {
-	Id        string    `gorethink:"id"`
+	ID        string    `gorethink:"id"`
 	Name      string    `gorethink:"name"`
 	Owner     string    `gorethink:"owner"`
 	Birthtime time.Time `gorethink:"birthtime"`
@@ -170,8 +184,9 @@ type DataFileEntry struct {
 	Size      int64     `gorethink:"size"`
 }
 
+// DataDirDenorm is a denormalized instance of a datadir used in the datadirs_denorm table.
 type DataDirDenorm struct {
-	Id        string          `gorethink:"id"`
+	ID        string          `gorethink:"id"`
 	Name      string          `gorethink:"name"`
 	Owner     string          `gorethink:"owner"`
 	Birthtime time.Time       `gorethink:"birthtime"`

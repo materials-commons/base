@@ -27,8 +27,8 @@ func TestGetUser(t *testing.T) {
 		t.Fatalf("Didn't find existing user gtarcea@umich.edu: %s", err.Error())
 	}
 
-	if u.ApiKey != "472abe203cd411e3a280ac162d80f1bf" {
-		t.Fatalf("ApiKey does not match, got %s", u.ApiKey)
+	if u.APIKey != "472abe203cd411e3a280ac162d80f1bf" {
+		t.Fatalf("ApiKey does not match, got %s", u.APIKey)
 	}
 }
 
@@ -44,7 +44,7 @@ func TestGetUserModel(t *testing.T) {
 		t.Errorf("Lookup by Id failed: %s", err)
 	}
 
-	if user.Id != "gtarcea@umich.edu" {
+	if user.ID != "gtarcea@umich.edu" {
 		t.Errorf("Unexpected user return %#v", user)
 	}
 
