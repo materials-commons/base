@@ -39,7 +39,7 @@ func TestGetUserModel(t *testing.T) {
 	}
 
 	var user schema.User
-	err := m.Qs(session).ById("gtarcea@umich.edu", &user)
+	err := m.Qs(session).ByID("gtarcea@umich.edu", &user)
 	if err != nil {
 		t.Errorf("Lookup by Id failed: %s", err)
 	}
