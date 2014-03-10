@@ -20,10 +20,9 @@ type Query struct {
 	Session *r.Session
 }
 
-func (q *Query) ById(id string) (interface{}, error) {
-	result := reflect.New(reflect.TypeOf(q.schema))
-	err := GetItem(id, q.table, q.Session, result.Interface())
-	return result.Interface(), err
+func (q *Query) ById(id string, obj interface{}) error {
+	err := GetItem(id, q.table, q.Session, obj)
+	return err
 }
 
 func (m *Model) Q() *Query {

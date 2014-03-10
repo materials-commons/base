@@ -38,9 +38,14 @@ func TestGetUserModel(t *testing.T) {
 		table:  "users",
 	}
 
-	_, err := m.Qs(session).ById("gtarcea@umich.edu")
+	var user schema.User
+	err := m.Qs(session).ById("gtarcea@umich.edu", &user)
 	if err != nil {
 		t.Errorf("Lookup by Id failed: %s", err)
+	}
+
+	if user.Id != "gtarcea@umich.edu" {
+		t.Errorf("Unexpected user return %#v", user)
 	}
 
 	var users []schema.User
@@ -48,6 +53,7 @@ func TestGetUserModel(t *testing.T) {
 	if err != nil {
 		t.Errorf("Lookup all users failed: %s", err)
 	}
+
 	if len(users) == 0 {
 		t.Errorf("No users returned when looking up all users")
 	}
