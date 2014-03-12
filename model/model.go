@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	r "github.com/dancannon/gorethink"
+	"github.com/dancannon/gorethink/encoding"
 	"github.com/materials-commons/base/db"
 	"github.com/materials-commons/base/mc"
 	"github.com/materials-commons/base/schema"
@@ -104,30 +105,74 @@ func (q *Query) Rows(query r.RqlTerm, results interface{}) error {
 }
 
 // Update updates an existing database model entry.
-func (q *Query) Update() error {
-	return nil
-}
-
-// Insert inserts a new item into the model.
-func (q *Query) Insert() error {
-	return nil
-}
-
-// Delete deletes an existing database model entry.
-func (q *Query) Delete() error {
-	return nil
-}
-
-/*
-func (q *Query) Exec() (id string, err error) {
-	rw, err := q.RunWrite(q.session)
+func (q *Query) Update(id string, what interface{}) error {
+	var (
+		dv  interface{}
+		err error
+	)
+	v := reflect.ValueOf(what)
+	if v.Kind() == reflect.Struct || v.Kind() == reflect.Struct {
+		dv, err = encoding.Encode(what)
+		if err != nil {
+			return mc.ErrInvalid
+		}
+	} else {
+		dv = what
+	}
+	rv, err := q.T().Get(id).Update(dv).RunWrite(q.Session)
 	switch {
 	case err != nil:
 		return err
-
+	case rv.Errors != 0:
+		return mc.ErrNotFound
+	default:
+		return nil
 	}
 }
-*/
+
+// Insert inserts a new model entry into the database
+func (q *Query) Insert(what interface{}, dest interface{}) error {
+	returnValue := false
+	dv := reflect.ValueOf(dest)
+	if dv.Kind() == reflect.Ptr {
+		returnValue = true
+	} else if dv.Kind() != reflect.Invalid {
+		return mc.ErrInvalid
+	}
+
+	opts := r.InsertOpts{
+		ReturnVals: returnValue,
+	}
+	rv, err := q.T().Insert(what, opts).RunWrite(q.Session)
+	switch {
+	case err != nil:
+		return err
+	case rv.Errors != 0:
+		return mc.ErrCreate
+	case rv.Inserted == 0:
+		return mc.ErrCreate
+	default:
+		if returnValue {
+			encoding.Decode(dest, rv.NewValue)
+		}
+		return nil
+	}
+}
+
+// Delete deletes an existing database model entry.
+func (q *Query) Delete(id string) error {
+	rv, err := q.T().Get(id).Delete().RunWrite(q.Session)
+	switch {
+	case err != nil:
+		return err
+	case rv.Errors != 0:
+		return mc.ErrNotFound
+	case rv.Deleted == 0:
+		return mc.ErrNotFound
+	default:
+		return nil
+	}
+}
 
 /* ************************************************************** */
 

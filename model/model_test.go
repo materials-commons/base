@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	r "github.com/dancannon/gorethink"
+	"github.com/materials-commons/base/mc"
 	"github.com/materials-commons/base/schema"
 	"testing"
 )
@@ -22,12 +23,12 @@ func TestGetUser(t *testing.T) {
 		t.Fatalf("Found non-existant user nosuch@nosuch.com")
 	}
 
-	u, err := GetUser("gtarcea@umich.edu", session)
+	u, err := GetUser("test@mc.org", session)
 	if err != nil {
-		t.Fatalf("Didn't find existing user gtarcea@umich.edu: %s", err.Error())
+		t.Fatalf("Didn't find existing user test@mc.org: %s", err.Error())
 	}
 
-	if u.APIKey != "472abe203cd411e3a280ac162d80f1bf" {
+	if u.APIKey != "test" {
 		t.Fatalf("ApiKey does not match, got %s", u.APIKey)
 	}
 }
@@ -39,12 +40,12 @@ func TestGetUserModel(t *testing.T) {
 	}
 
 	var user schema.User
-	err := m.Qs(session).ByID("gtarcea@umich.edu", &user)
+	err := m.Qs(session).ByID("test@mc.org", &user)
 	if err != nil {
 		t.Errorf("Lookup by Id failed: %s", err)
 	}
 
-	if user.ID != "gtarcea@umich.edu" {
+	if user.ID != "test@mc.org" {
 		t.Errorf("Unexpected user return %#v", user)
 	}
 
@@ -56,6 +57,61 @@ func TestGetUserModel(t *testing.T) {
 
 	if len(users) == 0 {
 		t.Errorf("No users returned when looking up all users")
+	}
+}
+
+func TestInsertDeleteUserModel(t *testing.T) {
+	m := Users
+	u := schema.NewUser("tuser", "tuser@test.org", "abc123", "apikey123")
+	var user schema.User
+	err := m.Qs(session).Insert(u, &user)
+	if err != nil {
+		t.Fatalf("Not able to insert new user: %s", err)
+	}
+
+	err = m.Qs(session).Delete(user.ID)
+	if err != nil {
+		t.Fatalf("Unable to delete id %s: %s", user.ID, err)
+	}
+
+	err = m.Qs(session).Insert(u, user)
+	if err != mc.ErrInvalid {
+		t.Fatalf("Passed in wrong type and did not get error")
+	}
+
+	err = m.Qs(session).Insert(u, nil)
+	if err != nil {
+		t.Fatalf("Performed insert without retrieving value and got error: %s", err)
+	}
+	err = m.Qs(session).Delete(user.ID)
+	if err != nil {
+		t.Errorf("Unable to delete user with id %s: %s", user.ID, err)
+	}
+}
+
+func TestUpdateDeleteUserModel(t *testing.T) {
+	var u schema.User
+	err := Users.Qs(session).ByID("test@mc.org", &u)
+	if err != nil {
+		t.Fatalf("Unable to retrieve test@mc.org: %s", err)
+	}
+
+	u.Description = "change1"
+	err = Users.Qs(session).Update(u.ID, u)
+	if err != nil {
+		t.Fatalf("Unable to update user test@mc.org: %s", err)
+	}
+	var u2 schema.User
+	Users.Qs(session).ByID("test@mc.org", &u2)
+	if u2.Description != "change1" {
+		t.Errorf("Description not updated, expected 'change1', got '%s'", u2.Description)
+	}
+
+	// Test with map
+	err = Users.Qs(session).Update(u.ID, map[string]interface{}{"description": "change2"})
+	Users.Qs(session).ByID("test@mc.org", &u2)
+	if u2.Description != "change2" {
+		t.Errorf("Description not updated, expected 'change2', got '%s'", u2.Description)
 	}
 }
 
