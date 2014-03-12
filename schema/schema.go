@@ -158,6 +158,7 @@ type User struct {
 func NewUser(name, email, password, apikey string) User {
 	now := time.Now()
 	return User{
+		ID:        email,
 		Name:      name,
 		Email:     email,
 		Password:  password,
