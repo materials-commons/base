@@ -20,4 +20,3 @@ func Field(name, value string) logrus.Fields {
 		name: value,
 	}
 }
-

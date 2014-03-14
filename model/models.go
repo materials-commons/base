@@ -19,17 +19,17 @@ var Users = &Model{
 // Dirs is a default model for the datadirs table.
 var Dirs = &Model{
 	schema: schema.DataDir{},
-	table: "datadirs",
+	table:  "datadirs",
 }
 
 // DirsDenorm is a default model for the denormalized datadirs_denorm table
 var DirsDenorm = &Model{
 	schema: schema.DataDirDenorm{},
-	table: "datadirs_denorm",
+	table:  "datadirs_denorm",
 }
 
 // Files is a default model for the datafiles table
 var Files = &Model{
 	schema: schema.DataFile{},
-	table: "datafiles",
+	table:  "datafiles",
 }
