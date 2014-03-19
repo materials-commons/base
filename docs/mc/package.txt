@@ -1,0 +1,75 @@
+PACKAGE DOCUMENTATION
+
+package mc
+    import "github.com/materials-commons/base/mc"
+
+
+
+VARIABLES
+
+var (
+    // ErrNotFound Item not found
+    ErrNotFound = errors.New("not found")
+
+    // ErrInvalid Invalid request
+    ErrInvalid = errors.New("invalid")
+
+    // ErrExists Items already exists
+    ErrExists = errors.New("exists")
+
+    // ErrNoAccess Access to item not allowed
+    ErrNoAccess = errors.New("no access")
+
+    // ErrCreate Create failed reason unknown
+    ErrCreate = errors.New("unable to create")
+
+    // ErrInternal Internal fatal error
+    ErrInternal = errors.New("internal error")
+)
+
+
+FUNCTIONS
+
+func ErrorCodeToError(ec ErrorCode) error
+    ErrorCodeToError maps a given ErrorCode to an error.
+
+
+TYPES
+
+type ErrorCode int
+    ErrorCode is an integer representation of a error that we can encode and
+    send over the network.
+
+const (
+    // ErrorCodeSuccess err == nil
+    ErrorCodeSuccess ErrorCode = iota
+
+    // ErrorCodeNotFound ErrNotFound
+    ErrorCodeNotFound
+
+    // ErrorCodeInvalid ErrInvalid
+    ErrorCodeInvalid
+
+    // ErrorCodeExists ErrCodeExists
+    ErrorCodeExists
+
+    // ErrorCodeNoAccess ErrNoAccess
+    ErrorCodeNoAccess
+
+    // ErrorCodeCreate ErrCreate
+    ErrorCodeCreate
+
+    // ErrorCodeInternal ErrInternal
+    ErrorCodeInternal
+
+    // ErrorCodeUnknown Catch all when we can't map an error
+    ErrorCodeUnknown
+)
+
+
+func ErrorToErrorCode(err error) ErrorCode
+    ErrorToErrorCode maps from an error to an ErrorCode.
+
+
+
+

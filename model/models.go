@@ -6,7 +6,7 @@ import (
 
 // Groups is a default model for the usergroups table.
 var Groups = &Model{
-	schema: schema.UserGroup{},
+	schema: schema.Group{},
 	table:  "usergroups",
 }
 
@@ -18,7 +18,7 @@ var Users = &Model{
 
 // Dirs is a default model for the datadirs table.
 var Dirs = &Model{
-	schema: schema.DataDir{},
+	schema: schema.Directory{},
 	table:  "datadirs",
 }
 
@@ -30,6 +30,6 @@ var DirsDenorm = &Model{
 
 // Files is a default model for the datafiles table
 var Files = &Model{
-	schema: schema.DataFile{},
+	schema: schema.File{},
 	table:  "datafiles",
 }

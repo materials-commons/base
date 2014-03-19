@@ -178,9 +178,9 @@ func (q *Query) Delete(id string) error {
 
 // The following are older functions that will be removed.
 
-// MatchingUserGroups finds user groups matching on query.
-func MatchingUserGroups(query r.RqlTerm, session *r.Session) ([]schema.UserGroup, error) {
-	var results []schema.UserGroup
+// MatchingGroups finds user groups matching on query.
+func MatchingGroups(query r.RqlTerm, session *r.Session) ([]schema.Group, error) {
+	var results []schema.Group
 	rows, err := query.Run(session)
 	if err != nil {
 		return results, err
@@ -189,7 +189,7 @@ func MatchingUserGroups(query r.RqlTerm, session *r.Session) ([]schema.UserGroup
 	defer rows.Close()
 
 	for rows.Next() {
-		var ug schema.UserGroup
+		var ug schema.Group
 		rows.Scan(&ug)
 		results = append(results, ug)
 	}
@@ -197,9 +197,9 @@ func MatchingUserGroups(query r.RqlTerm, session *r.Session) ([]schema.UserGroup
 	return results, nil
 }
 
-// GetDataFile retrieves an existing datafile by id.
-func GetDataFile(id string, session *r.Session) (*schema.DataFile, error) {
-	var df schema.DataFile
+// GetFile retrieves an existing datafile by id.
+func GetFile(id string, session *r.Session) (*schema.File, error) {
+	var df schema.File
 	if err := GetItem(id, "datafiles", session, &df); err != nil {
 		return nil, err
 	}
@@ -224,9 +224,9 @@ func GetProject(id string, session *r.Session) (*schema.Project, error) {
 	return &p, nil
 }
 
-// GetDataDir retrieves an existing datadir by id.
-func GetDataDir(id string, session *r.Session) (*schema.DataDir, error) {
-	var d schema.DataDir
+// GetDirectory retrieves an existing datadir by id.
+func GetDirectory(id string, session *r.Session) (*schema.Directory, error) {
+	var d schema.Directory
 	if err := GetItem(id, "datadirs", session, &d); err != nil {
 		return nil, err
 	}
