@@ -2,6 +2,7 @@ package protocol
 
 import (
 	"github.com/materials-commons/base/mc"
+	"time"
 )
 
 // MessageType identifies the type of message. This is prepended to the encoded
@@ -10,11 +11,38 @@ import (
 type MessageType uint8
 
 const (
-	// LoginRequestMessage
+	// LoginRequestMessage LoginRequest message
 	LoginRequestMessage = iota
 
-	// LoginResponseMessage
+	// LoginResponseMessage LoginResponse message
 	LoginResponseMessage
+
+	// LogoutRequestMessage LogoutRequest message
+	LogoutRequestMessage
+
+	// CreateProjectRequestMessage CreateProjectRequest message
+	CreateProjectRequestMessage
+
+	// CreateProjectResponseMessage CreateProjectResponse message
+	CreateProjectResponseMessage
+
+	// CreateDirectoryRequestMessage CreateDirectoryRequest message
+	CreateDirectoryRequestMessage
+
+	// CreateDirectoryResponseMessage CreateDirectoryResponse message
+	CreateDirectoryResponseMessage
+
+	// CreateFileRequestMessage CreateFileRequest message
+	CreateFileRequestMessage
+
+	// CreateFileResponseMessage CreateFileResponse message
+	CreateFileResponseMessage
+
+	// DirectoryStatRequestMessage DirectoryStatRequest message
+	DirectoryStatRequestMessage
+
+	// DirectoryStatResponseMessage DirectoryStatResponse message
+	DirectoryStatResponseMessage
 )
 
 // Status is the status of the request. All response type messages include a request status.
@@ -46,7 +74,7 @@ type CreateProjectRequest struct {
 	Name string
 
 	// If shared is set to true then the server will check if a project matching
-	// this name exists in any of the projects we have access to. If so it will
+	// this name exists in any of the projects user has access to. If so it will
 	// use that project.
 	Shared bool
 }
@@ -117,28 +145,79 @@ type CreateFileRequest struct {
 	CreateNewVersion bool
 }
 
-// CreateFileResponse is the response to a CreateFileRequest. 
+// CreateFileResponse is the response to a CreateFileRequest.
 type CreateFileResponse struct {
 	// Status of the request. There are three error codes for success:
 	//    ErrorCodeSuccess - File was created
 	//    ErrorCodeExists  - File already exists
 	//    ErrorCodeNew     - A new version of the file was created
 	// All other error codes are failures.
-	Status 
+	Status
 
 	// The internal id of the file.
 	FileID string
 }
 
+// DirectoryStatRequest requests the server to send back its current
+// view of the given directory.
+type DirectoryStatRequest struct {
+	ProjectID   string
+	DirectoryID string
+}
 
+// StatEntryType identifies the type of stat entry as either a file
+// or a directory.
+type StatEntryType uint8
 
+const (
+	// StatTypeDirectory entry is a directory
+	StatTypeDirectory StatEntryType = iota
 
+	// StatTypeFile entry is a file
+	StatTypeFile
+)
 
+// StatEntry describes a single file or directory
+type StatEntry struct {
+	// The type being described. If Type is StatTypeDirectory, then
+	// Checksum, Size, and UploadedSize are not defined.
+	Type StatEntryType
 
+	// Name of entry
+	Name string
 
+	// The internal ID of the entry
+	ID string
 
+	// Owner of entry
+	Owner string
 
+	// The computed MD5 Hash
+	Checksum string
 
+	// The size of the file
+	Size int64
 
+	// The actual uploaded size of the file
+	UploadedSize int64
 
+	// Datetime the entry was created on the server.
+	Birthtime time.Time
+}
 
+// DirectoryStatResponse is the response for a DirectoryStatRequest. It returns
+// a list of all the known entries in the directory.
+type DirectoryStatResponse struct {
+	// Status of the request
+	Status
+
+	// ProjectID passed in the request
+	ProjectID string
+
+	// DirectoryID passed in the request
+	DirectoryID string
+
+	// A list of all the entries (file and directory) that the server
+	// knows about for this directory.
+	Entries []StatEntry
+}
