@@ -33,7 +33,7 @@ type LoginRequest struct {
 
 // LoginResponse will inform the client whether the login request was successful.
 type LoginResponse struct {
-	Status Status
+	Status
 }
 
 // LogoutRequest is sent to end a session and disconnect. There client doesn't wait for
@@ -60,7 +60,7 @@ type CreateProjectResponse struct {
 	//    ErrorCodeExists  - Project already exists
 	// All other error codes are failures.
 	Status Status
-	
+
 	// The internal ProjectID for the created or existing project.
 	ProjectID string
 
@@ -86,7 +86,7 @@ type CreateDirectoryResponse struct {
 	//    ErrorCodeSuccess - Directory was created
 	//    ErrorCodeExists  - Directory already exists
 	// All other error codes are failures.
-	Status Status
+	Status
 
 	// The internal id of the directory.
 	DirectoryID string
@@ -110,16 +110,35 @@ type CreateFileRequest struct {
 
 	// The size of the file
 	Size int64
+
+	// If CreateNewVersion is set to true then a new file version will
+	// be created if the previous file has already been successfully
+	// uploaded.
+	CreateNewVersion bool
 }
 
+// CreateFileResponse is the response to a CreateFileRequest. 
 type CreateFileResponse struct {
 	// Status of the request. There are three error codes for success:
 	//    ErrorCodeSuccess - File was created
 	//    ErrorCodeExists  - File already exists
 	//    ErrorCodeNew     - A new version of the file was created
 	// All other error codes are failures.
-	Status Status
+	Status 
 
 	// The internal id of the file.
 	FileID string
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
