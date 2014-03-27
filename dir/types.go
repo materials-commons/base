@@ -7,18 +7,44 @@ import (
 
 // FileInfo describes a file or directory entry
 type FileInfo struct {
-	Path     string      // Full path including name
-	Size     int64       // Size valid only for file
-	Checksum string      // MD5 Hash - valid only for file
-	MTime    time.Time   // Modification time
-	Mode     os.FileMode // Permissions
-	IsDir    bool        // True if this entry represents a directory
+	Path     string    // Full path including name
+	Size     int64     // Size valid only for file
+	Checksum string    // MD5 Hash - valid only for files
+	MTime    time.Time // Modification time
+	IsDir    bool      // True if this entry represents a directory
+}
+
+// newFile creates a new File entry.
+func newFileInfo(path string, info os.FileInfo) *FileInfo {
+	fi := &FileInfo{
+		Path:  path,
+		MTime: info.ModTime(),
+		IsDir: info.IsDir(),
+	}
+
+	if !info.IsDir() {
+		fi.Size = info.Size()
+	}
+
+	return fi
 }
 
 // Directory is a container for the files and sub directories in a single directory.
-// Each sub directory will itself contain the same list.
+// Each sub directory will itself contain a list of files and directories.
 type Directory struct {
-	Info           FileInfo
-	Files          []*FileInfo  // List of files in this directory
-	SubDirectories []*Directory // List of directories in this directory
+	FileInfo                             // Information about the directory
+	Files          []*FileInfo           // List of files and directories in this directory
+	SubDirectories map[string]*Directory // List of directories in this directory
+}
+
+// newDirectory creates a new Directory entry.
+func newDirectory(path string, info os.FileInfo) *Directory {
+	return &Directory{
+		FileInfo: FileInfo{
+			Path:  path,
+			MTime: info.ModTime(),
+			IsDir: true,
+		},
+		SubDirectories: make(map[string]*Directory),
+	}
 }

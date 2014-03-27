@@ -8,26 +8,16 @@ import (
 var _ = fmt.Println
 
 func TestLoad(t *testing.T) {
-	d, err := Load("/tmp/testdir")
+	d, err := Load("testdir")
 	if err != nil {
-		t.Fatalf("Failed to create directory for /tmp/testdir: %s", err)
+		t.Fatalf("Failed to create directory for testdir: %s", err)
 	}
 
-	fmt.Printf("%#v\n", d)
-	fmt.Println("")
-	for _, dir := range d.SubDirectories {
-		fmt.Printf("Subdir = %#v\n\n", dir)
-		for _, d2 := range dir.SubDirectories {
-			fmt.Printf("  Subdir for %s: %#v\n", dir.Info.Path, d2)
-		}
-		fmt.Println("")
-		for _, f2 := range dir.Files {
-			fmt.Printf("  File for %s: %#v\n", dir.Info.Path, f2)
-		}
+	if len(d.Files) != 4 {
+		t.Fatalf("Wrong length of entries in testdir Files, expected 4, got %d", len(d.Files))
 	}
 
-	fmt.Println("")
-	for _, f := range d.Files {
-		fmt.Printf("File = %#v\n", f)
+	if len(d.SubDirectories) != 2 {
+		t.Fatalf("Wrong length of entries in testdir subdirectories, expected 2, got %d", len(d.SubDirectories))
 	}
 }
