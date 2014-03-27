@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// DataFileEntry is a denormalized instance of a datafile used in the datadirs_denorm table.
+// FileEntry is a denormalized instance of a datafile used in the datadirs_denorm table.
 type FileEntry struct {
 	ID        string    `gorethink:"id"`
 	Name      string    `gorethink:"name"`
