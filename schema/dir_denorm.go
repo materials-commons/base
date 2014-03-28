@@ -22,3 +22,15 @@ type DataDirDenorm struct {
 	Birthtime time.Time   `gorethink:"birthtime"`
 	DataFiles []FileEntry `gorethink:"datafiles"`
 }
+
+// Filter will filter out non matching FileEntry items.
+func (d DataDirDenorm) Filter(keep func(f FileEntry) bool) []FileEntry {
+	var keptEntries []FileEntry
+	for _, fileEntry := range d.DataFiles {
+		if keep(fileEntry) {
+			keptEntries = append(keptEntries, fileEntry)
+		}
+	}
+
+	return keptEntries
+}
