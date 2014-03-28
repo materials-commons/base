@@ -33,3 +33,9 @@ var Files = &Model{
 	schema: schema.File{},
 	table:  "datafiles",
 }
+
+// Projects is a default model for the projects table
+var Projects = &Model{
+	schema: schema.Project{},
+	table:  "projects",
+}
