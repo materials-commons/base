@@ -27,7 +27,7 @@ func DiffFlat(origFiles, newFiles []*FileInfo) []*Patch {
 	}
 
 	state.computePatches()
-	return state.patches	
+	return state.patches
 }
 
 // computePatches creates a patch list of changes to apply to the original directory
