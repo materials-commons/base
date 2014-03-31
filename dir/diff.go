@@ -1,8 +1,8 @@
 package dir
 
 type diffState struct {
-	origFiles []*FileInfo
-	newFiles  []*FileInfo
+	origFiles []FileInfo
+	newFiles  []FileInfo
 	patches   []*Patch
 }
 
@@ -19,7 +19,7 @@ func Diff(originalVersion *Directory, newerVersion *Directory) []*Patch {
 // DiffFlat compares two versions of a directory tree over time. It is like
 // Diff except that it expects to receive flattened, sorted lists of the
 // two directories contents.
-func DiffFlat(origFiles, newFiles []*FileInfo) []*Patch {
+func DiffFlat(origFiles, newFiles []FileInfo) []*Patch {
 	state := &diffState{
 		origFiles: origFiles,
 		newFiles:  newFiles,
@@ -93,7 +93,7 @@ DIR_COMPARE_LOOP:
 	}
 }
 
-func (s *diffState) addPatch(f *FileInfo, patchType PatchType) {
+func (s *diffState) addPatch(f FileInfo, patchType PatchType) {
 	patch := &Patch{
 		File: f,
 		Type: patchType,

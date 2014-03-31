@@ -87,7 +87,7 @@ func (c *walkerContext) setCurrentDir(path string) {
 func (c *walkerContext) addSubdir(path string, info os.FileInfo) {
 	dir := newDirectory(path, info)
 	c.current.SubDirectories[path] = dir
-	c.current.Files = append(c.current.Files, &dir.FileInfo)
+	c.current.Files = append(c.current.Files, dir.FileInfo)
 	c.all[path] = dir
 }
 

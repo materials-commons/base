@@ -36,7 +36,7 @@ func TestFlatten(t *testing.T) {
 	}
 }
 
-func checkPath(path string, finfo *FileInfo, t *testing.T) {
+func checkPath(path string, finfo FileInfo, t *testing.T) {
 	if path != finfo.Path {
 		t.Fatalf("Expect path = %s, goth %s", path, finfo.Path)
 	}

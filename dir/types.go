@@ -15,8 +15,8 @@ type FileInfo struct {
 }
 
 // newFile creates a new File entry.
-func newFileInfo(path string, info os.FileInfo) *FileInfo {
-	fi := &FileInfo{
+func newFileInfo(path string, info os.FileInfo) FileInfo {
+	fi := FileInfo{
 		Path:  path,
 		MTime: info.ModTime(),
 		IsDir: info.IsDir(),
@@ -33,7 +33,7 @@ func newFileInfo(path string, info os.FileInfo) *FileInfo {
 // Each sub directory will itself contain a list of files and directories.
 type Directory struct {
 	FileInfo                             // Information about the directory
-	Files          []*FileInfo           // List of files and directories in this directory
+	Files          []FileInfo            // List of files and directories in this directory
 	SubDirectories map[string]*Directory // List of directories in this directory
 }
 

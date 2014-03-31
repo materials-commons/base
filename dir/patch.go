@@ -18,6 +18,6 @@ const (
 // the kind of change to apply. The list of patches implies changes to apply to
 // the original directory to make it look like the new directory.
 type Patch struct {
-	File *FileInfo
+	File FileInfo
 	Type PatchType
 }
