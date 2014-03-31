@@ -13,7 +13,7 @@ type Error struct {
 // Implement error interface.
 func (e *Error) Error() string {
 	if e.Message != "" {
-		return e.Err.Error() + ":" + e.Message		
+		return e.Err.Error() + ":" + e.Message
 	}
 
 	return e.Err.Error()
@@ -51,13 +51,3 @@ func Errorf(err error, message string, args ...interface{}) *Error {
 func Errorm(err error, err2 error) *Error {
 	return newError(err, err2.Error())
 }
-
-
-
-
-
-
-
-
-
-
