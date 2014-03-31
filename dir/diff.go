@@ -93,6 +93,7 @@ DIR_COMPARE_LOOP:
 	}
 }
 
+// addPatch adds a patch entries to the state.
 func (s *diffState) addPatch(f FileInfo, patchType PatchType) {
 	patch := Patch{
 		File: f,
