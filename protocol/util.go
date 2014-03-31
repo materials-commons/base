@@ -12,17 +12,17 @@ a message type prepended to it. In our case we also prepend a version so that mu
 protocol versions can be supported.
 */
 
-// Encode encodes a message using MsgPack. It prepends the message type and the CurrentVersion
-// to the returned buffer.
-func Encode(msgType MessageType, in interface{}) (*bytes.Buffer, error) {
-	return EncodeVersion(msgType, CurrentVersion, in)
+// EncodeCurrentVersion encodes a message using MsgPack. It prepends the message type and
+// the CurrentVersion to the returned buffer.
+func EncodeCurrentVersion(msgType uint8, in interface{}) (*bytes.Buffer, error) {
+	return Encode(msgType, CurrentVersion, in)
 }
 
-// EncodeVersion encodes a message using MessagePack. It prepends the message type and the passed in
+// Encode encodes a message using MessagePack. It prepends the message type and the passed in
 // version to the returned buffer.
-func EncodeVersion(msgType MessageType, version uint8, in interface{}) (*bytes.Buffer, error) {
+func Encode(msgType uint8, version uint8, in interface{}) (*bytes.Buffer, error) {
 	buf := bytes.NewBuffer(nil)
-	buf.WriteByte(uint8(msgType))
+	buf.WriteByte(msgType)
 	buf.WriteByte(version)
 	handle := codec.MsgpackHandle{}
 	encoder := codec.NewEncoder(buf, &handle)
