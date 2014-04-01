@@ -33,7 +33,7 @@ func Encode(msgType uint8, version uint8, in interface{}) (*bytes.Buffer, error)
 }
 
 // Decode decodes a buffer using MessagePack. The buffer passed in needs to have removed the
-// message type and version that were passed in.
+// message type and version from the buf.
 func Decode(buf []byte, out interface{}) error {
 	reader := bytes.NewReader(buf)
 	handle := codec.MsgpackHandle{}
