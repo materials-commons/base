@@ -5,14 +5,9 @@ import (
 	"time"
 )
 
-// MessageType identifies the type of message. This is prepended to the encoded
-// buffer and is used by the receiver to identify the type of message it expects
-// to decode.
-type MessageType uint8
-
 const (
 	// LoginRequestMessage LoginRequest message
-	LoginRequestMessage = iota
+	LoginRequestMessage uint8 = iota
 
 	// LoginResponseMessage LoginResponse message
 	LoginResponseMessage
