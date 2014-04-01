@@ -2,6 +2,8 @@ package protocol
 
 import (
 	"bytes"
+	"github.com/materials-commons/base/codex"
+	"github.com/materials-commons/base/mc"
 	"github.com/ugorji/go/codec"
 )
 
@@ -41,8 +43,13 @@ func Decode(buf []byte, out interface{}) error {
 
 // Prepare retrieves the message type and version, and a buffer that is ready to be
 // sent to Decode.
-func Prepare(buf []byte) (msgType MessageType, version uint8, b []byte) {
-	msgType = MessageType(buf[0])
-	version = uint8(buf[1])
-	return msgType, version, buf[2:]
+func Prepare(buf []byte) (pb *codex.PreparedBuffer, err error) {
+	if len(buf) < 3 {
+		return nil, mc.ErrInvalid
+	}
+
+	pb.Type = buf[0]
+	pb.Version = buf[1]
+	pb.Bytes = buf[2:]
+	return pb, nil
 }
