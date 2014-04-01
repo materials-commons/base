@@ -48,8 +48,10 @@ func Prepare(buf []byte) (pb *codex.PreparedBuffer, err error) {
 		return nil, mc.ErrInvalid
 	}
 
-	pb.Type = buf[0]
-	pb.Version = buf[1]
-	pb.Bytes = buf[2:]
+	pb = &codex.PreparedBuffer{
+		Type:    uint8(buf[0]),
+		Version: uint8(buf[1]),
+		Bytes:   buf[2:],
+	}
 	return pb, nil
 }
