@@ -31,6 +31,12 @@ var Groups = &Model{
 }
     Groups is a default model for the usergroups table.
 
+var Projects = &Model{
+    schema: schema.Project{},
+    table:  "projects",
+}
+    Projects is a default model for the projects table
+
 var Users = &Model{
     schema: schema.User{},
     table:  "users",

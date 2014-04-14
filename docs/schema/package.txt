@@ -18,6 +18,9 @@ type DataDirDenorm struct {
     datadirs_denorm table.
 
 
+func (d DataDirDenorm) Filter(keep func(f FileEntry) bool) []FileEntry
+    Filter will filter out non matching FileEntry items.
+
 
 type Directory struct {
     ID              string    `gorethink:"id,omitempty"`
@@ -91,7 +94,7 @@ type FileEntry struct {
     Checksum  string    `gorethink:"checksum"`
     Size      int64     `gorethink:"size"`
 }
-    DataFileEntry is a denormalized instance of a datafile used in the
+    FileEntry is a denormalized instance of a datafile used in the
     datadirs_denorm table.
 
 

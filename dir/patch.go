@@ -15,8 +15,7 @@ const (
 )
 
 // Patch is an instance of a difference when comparing two directories. It specifies
-// the kind of change to apply. The list of patches implies changes to apply to
-// the original directory to make it look like the new directory.
+// the kind of change to apply.
 type Patch struct {
 	File FileInfo
 	Type PatchType
