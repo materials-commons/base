@@ -12,6 +12,9 @@ const (
 
 	// PatchEdit item content was changed
 	PatchEdit
+
+	// PatchConflict there is a conflict with the specified file
+	PatchConflict
 )
 
 // Patch is an instance of a difference when comparing two directories. It specifies
