@@ -7,6 +7,7 @@ import (
 
 // FileInfo describes a file or directory entry
 type FileInfo struct {
+	ID       string    // ID of file/directory
 	Path     string    // Full path including name
 	Size     int64     // Size valid only for file
 	Checksum string    // MD5 Hash - valid only for files
