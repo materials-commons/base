@@ -8,10 +8,10 @@ import (
 )
 
 /*
-The following code encodes and decodes buffers of bytes using MessagePack. It uses the approach
+The following encodes and decodes buffers of bytes using MessagePack. It uses the approach
 found in github.com/hashicorp/serf for identifying the type of message. The buffer has
-a message type prepended to it. In our case we also prepend a version so that multiple
-protocol versions can be supported.
+a message type prepended to it. In our implementation we also prepend a version so that
+multiple protocol versions can be supported.
 */
 
 // EncodeCurrentVersion encodes a message using MsgPack. It prepends the message type and
@@ -41,7 +41,7 @@ func Decode(buf []byte, out interface{}) error {
 	return decoder.Decode(out)
 }
 
-// Prepare retrieves the message type and version, and a buffer that is ready to be
+// Prepare retrieves the message type, version, and a buffer that is ready to be
 // sent to Decode.
 func Prepare(buf []byte) (pb *codex.PreparedBuffer, err error) {
 	if len(buf) < 3 {

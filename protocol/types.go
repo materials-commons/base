@@ -91,7 +91,6 @@ type CreateProjectResp struct {
 type CreateDirectoryReq struct {
 	ProjectID string // The project to create the directory in.
 	Path      string // The directory path, relative to the project to create. All members of the path except the leaf must exist.
-
 }
 
 // CreateDirectoryResp is the response for a CreateDirectoryRequest. A request to create
