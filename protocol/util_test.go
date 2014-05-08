@@ -5,12 +5,12 @@ import (
 )
 
 func TestEncode(t *testing.T) {
-	lr := LoginRequest{
+	lr := LoginReq{
 		User:   "test@mc.org",
 		APIKey: "test",
 	}
 
-	b, err := Encode(LoginRequestMessage, 1, &lr)
+	b, err := Encode(LoginRequest, 1, &lr)
 
 	if err != nil {
 		t.Fatalf("Unable to encode %#v: %s", lr, err)
@@ -19,8 +19,8 @@ func TestEncode(t *testing.T) {
 	bytesArray := b.Bytes()
 
 	// Check that the message was encoded
-	if uint8(bytesArray[0]) != LoginRequestMessage {
-		t.Fatalf("First byte doesn't encode LoginRequestMessage(%d), instead it encodes %d", LoginRequestMessage, bytesArray[0])
+	if uint8(bytesArray[0]) != LoginRequest {
+		t.Fatalf("First byte doesn't encode LoginRequest(%d), instead it encodes %d", LoginRequest, bytesArray[0])
 	}
 
 	if uint8(bytesArray[1]) != 1 {
@@ -29,12 +29,12 @@ func TestEncode(t *testing.T) {
 }
 
 func TestDecode(t *testing.T) {
-	lr := LoginRequest{
+	lr := LoginReq{
 		User:   "test@mc.org",
 		APIKey: "test",
 	}
 
-	b, err := Encode(LoginRequestMessage, 1, &lr)
+	b, err := Encode(LoginRequest, 1, &lr)
 	if err != nil {
 		t.Fatalf("Unable to encode %#v: %s", lr, err)
 	}
@@ -45,19 +45,19 @@ func TestDecode(t *testing.T) {
 		t.Fatalf("Prepare bytes failed with %s", err)
 	}
 
-	if pb.Type != LoginRequestMessage {
-		t.Fatalf("PreparedBuffer contains wrong type expected %d, got %d", LoginRequestMessage, pb.Type)
+	if pb.Type != LoginRequest {
+		t.Fatalf("Prepare contains wrong type expected %d, got %d", LoginRequest, pb.Type)
 	}
 
 	if pb.Version != 1 {
 		t.Fatalf("PreparedBuffer contains wrong version expected %d, got %d", 1, pb.Version)
 	}
 
-	var lr2 LoginRequest
+	var lr2 LoginReq
 
 	err = Decode(pb.Bytes, &lr2)
 	if err != nil {
-		t.Fatalf("Unable to decode bytes to a LoginRequest: %s", err)
+		t.Fatalf("Unable to decode bytes to a LoginReq: %s", err)
 	}
 
 	if lr2.User != "test@mc.org" {
