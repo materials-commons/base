@@ -130,8 +130,7 @@ func (q *Query) Update(id string, what interface{}) error {
 	}
 }
 
-// Insert inserts a new model entry into the database
-func (q *Query) Insert(what interface{}, dest interface{}) error {
+func (q *Query) InsertRaw(table string, what interface{}, dest interface{}) error {
 	returnValue := false
 	dv := reflect.ValueOf(dest)
 	if dv.Kind() == reflect.Ptr {
@@ -143,7 +142,8 @@ func (q *Query) Insert(what interface{}, dest interface{}) error {
 	opts := r.InsertOpts{
 		ReturnVals: returnValue,
 	}
-	rv, err := q.T().Insert(what, opts).RunWrite(q.Session)
+
+	rv, err := r.Table(table).Insert(what, opts).RunWrite(q.Session)
 	switch {
 	case err != nil:
 		return err
@@ -157,6 +157,11 @@ func (q *Query) Insert(what interface{}, dest interface{}) error {
 		}
 		return nil
 	}
+}
+
+// Insert inserts a new model entry into the database
+func (q *Query) Insert(what interface{}, dest interface{}) error {
+	return q.InsertRaw(q.table, what, dest)
 }
 
 // Delete deletes an existing database model entry.
