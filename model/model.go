@@ -130,6 +130,10 @@ func (q *Query) Update(id string, what interface{}) error {
 	}
 }
 
+// Insert a new entry into the database using the specified table. This is
+// available so that models can be used to update dependent tables without
+// having to create a model for them. For example, a join table doesn't
+// really need a model.
 func (q *Query) InsertRaw(table string, what interface{}, dest interface{}) error {
 	returnValue := false
 	dv := reflect.ValueOf(dest)
