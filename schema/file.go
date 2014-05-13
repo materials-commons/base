@@ -21,6 +21,7 @@ type File struct {
 	MediaType   string    `gorethink:"mediatype"`
 	Parent      string    `gorethink:"parent"`
 	UsesID      string    `gorethink:"usesid"`
+    DataDirs    []string  `gorethink:"datadirs"`
 }
 
 // NewFile creates a new File instance.
