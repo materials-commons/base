@@ -9,6 +9,7 @@ import (
 // metadata.
 type File struct {
 	ID          string    `gorethink:"id,omitempty"`
+	Current     bool      `gorethink:"current"`
 	Name        string    `gorethink:"name"`
 	Birthtime   time.Time `gorethink:"birthtime"`
 	MTime       time.Time `gorethink:"mtime"`
@@ -34,5 +35,6 @@ func NewFile(name, owner string) File {
 		Birthtime:   now,
 		MTime:       now,
 		ATime:       now,
+		Current:     true,
 	}
 }
