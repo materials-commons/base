@@ -31,7 +31,7 @@ func NewFile(name, owner string) File {
 	return File{
 		Name:        name,
 		Owner:       owner,
-		Description: name,
+		Description: "",
 		Birthtime:   now,
 		MTime:       now,
 		ATime:       now,
