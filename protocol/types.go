@@ -38,6 +38,9 @@ const (
 
 	// DirectoryStatResponse DirectoryStatResp
 	DirectoryStatResponse
+
+	// SendBytesRequest SendBytesReq
+	SendBytesRequest
 )
 
 // Status is the status of the request. All response type messages include a request status.
@@ -174,4 +177,10 @@ type DirectoryStatResp struct {
 	ProjectID   string      // ProjectID passed in the request
 	DirectoryID string      // DirectoryID passed in the request
 	Entries     []StatEntry // A list of all the entries for this directory.
+}
+
+// SendBytesReq contains the bytes to write
+type SendBytesReq struct {
+	FileID string // File ID on the server that these bytes are for
+	Bytes  []byte // The set of bytes to write
 }
