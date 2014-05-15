@@ -15,7 +15,7 @@ type Directory struct {
 	Birthtime time.Time `gorethink:"birthtime"`
 	MTime     time.Time `gorethink:"mtime"`
 	ATime     time.Time `gorethink:"atime"`
-    DataFiles []string  `gorethink:"datafiles"`
+	DataFiles []string  `gorethink:"datafiles"`
 }
 
 // NewDirectory creates a new Directory instance.
