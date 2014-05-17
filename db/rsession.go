@@ -20,9 +20,9 @@ func SetDatabase(db string) {
 // RSession creates a new RethinkDB session.
 func RSession() (*r.Session, error) {
 	return r.Connect(map[string]interface{}{
-		"address":  dbAddress,
-		"database": dbName,
-		"maxIdle": 10,
+		"address":   dbAddress,
+		"database":  dbName,
+		"maxIdle":   10,
 		"maxActive": 20,
 	})
 }
