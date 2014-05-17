@@ -22,5 +22,7 @@ func RSession() (*r.Session, error) {
 	return r.Connect(map[string]interface{}{
 		"address":  dbAddress,
 		"database": dbName,
+		"maxIdle": 10,
+		"maxActive": 20,
 	})
 }
