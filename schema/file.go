@@ -7,21 +7,22 @@ import (
 // File models a user file. A datafile is an abstract representation of a real file
 // plus the attributes that we need in our model for access, and other metadata.
 type File struct {
-	ID          string    `gorethink:"id,omitempty"`
-	Current     bool      `gorethink:"current"`
-	Name        string    `gorethink:"name"`
-	Birthtime   time.Time `gorethink:"birthtime"`
-	MTime       time.Time `gorethink:"mtime"`
-	ATime       time.Time `gorethink:"atime"`
+	ID          string    `gorethink:"id,omitempty"` // Primary key.
+	Current     bool      `gorethink:"current"`      // Is this the most current version.
+	Name        string    `gorethink:"name"`         // Name of file.
+	Birthtime   time.Time `gorethink:"birthtime"`    // Creation time.
+	MTime       time.Time `gorethink:"mtime"`        // Modification time.
+	ATime       time.Time `gorethink:"atime"`        // Last access time.
 	Description string    `gorethink:"description"`
 	Notes       []string  `gorethink:"notes"`
-	Owner       string    `gorethink:"owner"`
-	Checksum    string    `gorethink:"checksum"`
-	Size        int64     `gorethink:"size"`
-	MediaType   string    `gorethink:"mediatype"`
-	Parent      string    `gorethink:"parent"`
-	UsesID      string    `gorethink:"usesid"`
-	DataDirs    []string  `gorethink:"datadirs"`
+	Owner       string    `gorethink:"owner"`     // Who owns the file.
+	Checksum    string    `gorethink:"checksum"`  // MD5 Hash.
+	Size        int64     `gorethink:"size"`      // Size of file.
+	Uploaded    int64     `gorethink:"uploaded"`  // Number of bytes uploaded. When Size != Uploaded file is only partially uploaded.
+	MediaType   string    `gorethink:"mediatype"` // mime type.
+	Parent      string    `gorethink:"parent"`    // If there are multiple ids then parent is the id of the previous version.
+	UsesID      string    `gorethink:"usesid"`    // If file is a duplicate, then usesid points to the real file. This allows multiple files to share a single physical file.
+	DataDirs    []string  `gorethink:"datadirs"`  // List of the directories the file can be found in.
 }
 
 // FileID returns the id to use for the file. Because files can be duplicates, all
