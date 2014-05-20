@@ -215,15 +215,6 @@ func GetFile(id string, session *r.Session) (*schema.File, error) {
 	return &df, nil
 }
 
-// GetUser retrieves and existing user by id.
-func GetUser(id string, session *r.Session) (*schema.User, error) {
-	var u schema.User
-	if err := GetItem(id, "users", session, &u); err != nil {
-		return nil, err
-	}
-	return &u, nil
-}
-
 // GetProject retrieves an existing project by id.
 func GetProject(id string, session *r.Session) (*schema.Project, error) {
 	var p schema.Project
@@ -231,15 +222,6 @@ func GetProject(id string, session *r.Session) (*schema.Project, error) {
 		return nil, err
 	}
 	return &p, nil
-}
-
-// GetDirectory retrieves an existing datadir by id.
-func GetDirectory(id string, session *r.Session) (*schema.Directory, error) {
-	var d schema.Directory
-	if err := GetItem(id, "datadirs", session, &d); err != nil {
-		return nil, err
-	}
-	return &d, nil
 }
 
 // GetItem retrieves an item by id in the given table.

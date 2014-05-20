@@ -17,22 +17,6 @@ var (
 	})
 )
 
-func TestGetUser(t *testing.T) {
-	_, err := GetUser("nosuch@nosuch.com", session)
-	if err == nil {
-		t.Fatalf("Found non-existant user nosuch@nosuch.com")
-	}
-
-	u, err := GetUser("test@mc.org", session)
-	if err != nil {
-		t.Fatalf("Didn't find existing user test@mc.org: %s", err.Error())
-	}
-
-	if u.APIKey != "test" {
-		t.Fatalf("ApiKey does not match, got %s", u.APIKey)
-	}
-}
-
 func TestGetUserModel(t *testing.T) {
 	m := &Model{
 		schema: schema.User{},
