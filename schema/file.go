@@ -25,17 +25,6 @@ type File struct {
 	DataDirs    []string  `gorethink:"datadirs"`  // List of the directories the file can be found in.
 }
 
-// FileID returns the id to use for the file. Because files can be duplicates, all
-// duplicates are stored under a single ID. UsesID is set to the ID that an entry
-// points to when it is a duplicate.
-func (f *File) FileID() string {
-	if f.UsesID != "" {
-		return f.UsesID
-	}
-
-	return f.ID
-}
-
 // NewFile creates a new File instance.
 func NewFile(name, owner string) File {
 	now := time.Now()
@@ -48,4 +37,32 @@ func NewFile(name, owner string) File {
 		ATime:       now,
 		Current:     true,
 	}
+}
+
+// FileID returns the id to use for the file. Because files can be duplicates, all
+// duplicates are stored under a single ID. UsesID is set to the ID that an entry
+// points to when it is a duplicate.
+func (f *File) FileID() string {
+	if f.UsesID != "" {
+		return f.UsesID
+	}
+
+	return f.ID
+}
+
+// private type to hang methods off of
+type fs struct{}
+
+// Files gives access to help routines that work on lists of files.
+var Files fs
+
+// Find will return a matching File in a list of files when the match func returns true.
+func (f fs) Find(files []File, match func (f File) bool) *File {
+	for _, file := range files {
+		if match(file) {
+			return &file
+		}
+	}
+
+	return nil
 }
