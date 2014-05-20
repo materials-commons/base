@@ -57,7 +57,7 @@ type fs struct{}
 var Files fs
 
 // Find will return a matching File in a list of files when the match func returns true.
-func (f fs) Find(files []File, match func (f File) bool) *File {
+func (f fs) Find(files []File, match func(f File) bool) *File {
 	for _, file := range files {
 		if match(file) {
 			return &file
