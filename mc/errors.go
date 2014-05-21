@@ -22,6 +22,9 @@ var (
 
 	// ErrInternal Internal fatal error
 	ErrInternal = errors.New("internal error")
+
+	// ErrInUse object is locked and in use by someone else
+	ErrInUse = errors.New("in use")
 )
 
 // ErrorCode is an integer representation of a error that we can encode and send
@@ -50,6 +53,9 @@ const (
 	// ErrorCodeInternal ErrInternal
 	ErrorCodeInternal
 
+	// ErrorCodeInUse ErrInUse
+	ErrorCodeInUse
+
 	// ErrorCodeUnknown Catch all when we can't map an error
 	ErrorCodeUnknown
 )
@@ -62,6 +68,7 @@ var errorCodeMapping = map[ErrorCode]error{
 	ErrorCodeNoAccess: ErrNoAccess,
 	ErrorCodeCreate:   ErrCreate,
 	ErrorCodeInternal: ErrInternal,
+	ErrorCodeInUse:    ErrInUse,
 }
 
 // ErrorCodeToError maps a given ErrorCode to an error.
@@ -76,6 +83,7 @@ var errorMapping = map[string]ErrorCode{
 	ErrNoAccess.Error(): ErrorCodeNoAccess,
 	ErrCreate.Error():   ErrorCodeCreate,
 	ErrInternal.Error(): ErrorCodeInternal,
+	ErrInUse.Error():    ErrorCodeInUse,
 }
 
 // ErrorToErrorCode maps from an error to an ErrorCode.
