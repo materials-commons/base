@@ -39,6 +39,14 @@ func newError(err error, msg string) *Error {
 	}
 }
 
+func Is(err error, what error) bool {
+	if e, ok := err.(*Error); ok {
+		return e.Err == what
+	}
+
+	return err == what
+}
+
 // Errorf takes and error, a message string and a set of arguments and produces
 // a new Error.
 func Errorf(err error, message string, args ...interface{}) *Error {
