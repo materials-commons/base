@@ -145,6 +145,7 @@ func (q *Query) InsertRaw(table string, what interface{}, dest interface{}) erro
 
 	opts := r.InsertOpts{
 		ReturnVals: returnValue,
+		Durability: "hard",
 	}
 
 	rv, err := r.Table(table).Insert(what, opts).RunWrite(q.Session)
