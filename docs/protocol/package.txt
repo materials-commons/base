@@ -40,6 +40,9 @@ const (
 
     // DirectoryStatResponse DirectoryStatResp
     DirectoryStatResponse
+
+    // SendBytesRequest SendBytesReq
+    SendBytesRequest
 )
 
 const CurrentVersion uint8 = 1
@@ -61,8 +64,8 @@ func EncodeCurrentVersion(msgType uint8, in interface{}) (*bytes.Buffer, error)
     message type and the CurrentVersion to the returned buffer.
 
 func Prepare(buf []byte) (pb *codex.PreparedBuffer, err error)
-    Prepare retrieves the message type and version, and a buffer that is
-    ready to be sent to Decode.
+    Prepare retrieves the message type, version, and a buffer that is ready
+    to be sent to Decode.
 
 
 TYPES
@@ -70,7 +73,6 @@ TYPES
 type CreateDirectoryReq struct {
     ProjectID string // The project to create the directory in.
     Path      string // The directory path, relative to the project to create. All members of the path except the leaf must exist.
-
 }
     CreateDirectoryReq is sent to create a directory in a project.
 
@@ -197,6 +199,14 @@ type LogoutReq struct {
     LogoutReq is sent to end a session and disconnect. There client doesn't
     wait for a response from the server. It terminates the connection after
     sending this request.
+
+
+
+type SendBytesReq struct {
+    FileID string // File ID on the server that these bytes are for
+    Bytes  []byte // The set of bytes to write
+}
+    SendBytesReq contains the bytes to write.
 
 
 

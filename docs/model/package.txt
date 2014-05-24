@@ -49,9 +49,6 @@ FUNCTIONS
 func Delete(table, id string, session *r.Session) error
     Delete deletes an item by id in the given table.
 
-func GetDirectory(id string, session *r.Session) (*schema.Directory, error)
-    GetDirectory retrieves an existing datadir by id.
-
 func GetFile(id string, session *r.Session) (*schema.File, error)
     GetFile retrieves an existing datafile by id.
 
@@ -66,9 +63,6 @@ func GetRow(query r.RqlTerm, session *r.Session, obj interface{}) error
 
 func GetRows(query r.RqlTerm, session *r.Session, results interface{}) error
     GetRows runs a query an returns a list of results.
-
-func GetUser(id string, session *r.Session) (*schema.User, error)
-    GetUser retrieves and existing user by id.
 
 func MatchingGroups(query r.RqlTerm, session *r.Session) ([]schema.Group, error)
     MatchingGroups finds user groups matching on query.
@@ -113,6 +107,12 @@ func (q *Query) Delete(id string) error
 
 func (q *Query) Insert(what interface{}, dest interface{}) error
     Insert inserts a new model entry into the database
+
+func (q *Query) InsertRaw(table string, what interface{}, dest interface{}) error
+    Insert a new entry into the database using the specified table. This is
+    available so that models can be used to update dependent tables without
+    having to create a model for them. For example, a join table doesn't
+    really need a model.
 
 func (q *Query) Row(query r.RqlTerm, obj interface{}) error
     Row returns a single item. It takes an arbitrary query.

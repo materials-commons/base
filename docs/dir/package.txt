@@ -43,6 +43,7 @@ func (d *Directory) Flatten() []FileInfo
 
 
 type FileInfo struct {
+    ID       string    // ID of file/directory
     Path     string    // Full path including name
     Size     int64     // Size valid only for file
     Checksum string    // MD5 Hash - valid only for files
@@ -58,9 +59,7 @@ type Patch struct {
     Type PatchType
 }
     Patch is an instance of a difference when comparing two directories. It
-    specifies the kind of change to apply. The list of patches implies
-    changes to apply to the original directory to make it look like the new
-    directory.
+    specifies the kind of change to apply.
 
 
 
@@ -76,6 +75,9 @@ const (
 
     // PatchEdit item content was changed
     PatchEdit
+
+    // PatchConflict there is a conflict with the specified file
+    PatchConflict
 )
 
 

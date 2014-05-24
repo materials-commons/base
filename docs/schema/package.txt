@@ -5,6 +5,12 @@ package schema
 
 
 
+VARIABLES
+
+var Files fs
+    Files gives access to help routines that work on lists of files.
+
+
 TYPES
 
 type DataDirDenorm struct {
@@ -23,67 +29,57 @@ func (d DataDirDenorm) Filter(keep func(f FileEntry) bool) []FileEntry
 
 
 type Directory struct {
-    ID              string    `gorethink:"id,omitempty"`
-    Access          string    `gorethink:"access" db:"-"`
-    Owner           string    `gorethink:"owner" db:"-"`
-    MarkedForReview bool      `gorethink:"marked_for_review" db:"-"`
-    Name            string    `gorethink:"name"`
-    DataFiles       []string  `gorethink:"datafiles" db:"-"`
-    DataParams      []string  `gorethink:"dataparams" db:"-"`
-    Users           []string  `gorethink:"users" db:"-"`
-    Tags            []string  `gorethink:"tags" db:"-"`
-    MyTags          []string  `gorethink:"mytags" db:"-"`
-    Parent          string    `gorethink:"parent"`
-    Reviews         []string  `gorethink:"reviews" db:"-"`
-    Birthtime       time.Time `gorethink:"birthtime"`
-    MTime           time.Time `gorethink:"mtime"`
-    ATime           time.Time `gorethink:"atime"`
+    ID        string    `gorethink:"id,omitempty"`
+    Owner     string    `gorethink:"owner"`
+    Name      string    `gorethink:"name"`
+    Project   string    `gorethink:"project"`
+    Parent    string    `gorethink:"parent"`
+    Birthtime time.Time `gorethink:"birthtime"`
+    MTime     time.Time `gorethink:"mtime"`
+    ATime     time.Time `gorethink:"atime"`
+    DataFiles []string  `gorethink:"datafiles"`
 }
     Directory models a directory of user files. A dir is an abstract
     representation of a users file system directory plus the metadata needed
     by the system.
 
 
-func NewDirectory(name, access, owner, parent string) Directory
+func NewDirectory(name, owner, project, parent string) Directory
     NewDirectory creates a new Directory instance.
 
 
 
 type File struct {
-    ID              string    `gorethink:"id,omitempty"`
-    Name            string    `gorethink:"name"`
-    Access          string    `gorethink:"access" db:"-"`
-    MarkedForReview bool      `gorethink:"marked_for_review" db:"-"`
-    Reviews         []string  `gorethink:"reviews" db:"-"`
-    Birthtime       time.Time `gorethink:"birthtime"`
-    MTime           time.Time `gorethink:"mtime"`
-    ATime           time.Time `gorethink:"atime"`
-    Tags            []string  `gorethink:"tags" db:"-"`
-    MyTags          []string  `gorethink:"mytags" db:"-"`
-    Description     string    `gorethink:"description" db:"-"`
-    Notes           []string  `gorethink:"notes" db:"-"`
-    Owner           string    `gorethink:"owner" db:"-"`
-    Process         string    `gorethink:"process" db:"-"`
-    Machine         string    `gorethink:"machine" db:"-"`
-    Checksum        string    `gorethink:"checksum"`
-    Size            int64     `gorethink:"size"`
-    Location        string    `gorethink:"location" db:"-"`
-    MediaType       string    `gorethink:"mediatype" db:"-"`
-    Conditions      []string  `gorethink:"conditions" db:"-"`
-    Text            string    `gorethink:"text" db:"-"`
-    MetaTags        []string  `gorethink:"metatags" db:"-"`
-    DataDirs        []string  `gorethink:"datadirs" db:"-"`
-    Parent          string    `gorethink:"parent"`
-    UsesID          string    `gorethink:"usesid" db:"-"`
+    ID          string    `gorethink:"id,omitempty"` // Primary key.
+    Current     bool      `gorethink:"current"`      // Is this the most current version.
+    Name        string    `gorethink:"name"`         // Name of file.
+    Birthtime   time.Time `gorethink:"birthtime"`    // Creation time.
+    MTime       time.Time `gorethink:"mtime"`        // Modification time.
+    ATime       time.Time `gorethink:"atime"`        // Last access time.
+    Description string    `gorethink:"description"`
+    Notes       []string  `gorethink:"notes"`
+    Owner       string    `gorethink:"owner"`     // Who owns the file.
+    Checksum    string    `gorethink:"checksum"`  // MD5 Hash.
+    Size        int64     `gorethink:"size"`      // Size of file.
+    Uploaded    int64     `gorethink:"uploaded"`  // Number of bytes uploaded. When Size != Uploaded file is only partially uploaded.
+    MediaType   string    `gorethink:"mediatype"` // mime type.
+    Parent      string    `gorethink:"parent"`    // If there are multiple ids then parent is the id of the previous version.
+    UsesID      string    `gorethink:"usesid"`    // If file is a duplicate, then usesid points to the real file. This allows multiple files to share a single physical file.
+    DataDirs    []string  `gorethink:"datadirs"`  // List of the directories the file can be found in.
 }
     File models a user file. A datafile is an abstract representation of a
     real file plus the attributes that we need in our model for access, and
     other metadata.
 
 
-func NewFile(name, access, owner string) File
+func NewFile(name, owner string) File
     NewFile creates a new File instance.
 
+
+func (f *File) FileID() string
+    FileID returns the id to use for the file. Because files can be
+    duplicates, all duplicates are stored under a single ID. UsesID is set
+    to the ID that an entry points to when it is a duplicate.
 
 
 type FileEntry struct {

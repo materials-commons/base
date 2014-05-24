@@ -25,6 +25,9 @@ var (
 
     // ErrInternal Internal fatal error
     ErrInternal = errors.New("internal error")
+
+    // ErrInUse object is locked and in use by someone else
+    ErrInUse = errors.New("in use")
 )
 
 
@@ -32,6 +35,8 @@ FUNCTIONS
 
 func ErrorCodeToError(ec ErrorCode) error
     ErrorCodeToError maps a given ErrorCode to an error.
+
+func Is(err error, what error) bool
 
 
 TYPES
@@ -89,6 +94,9 @@ const (
 
     // ErrorCodeInternal ErrInternal
     ErrorCodeInternal
+
+    // ErrorCodeInUse ErrInUse
+    ErrorCodeInUse
 
     // ErrorCodeUnknown Catch all when we can't map an error
     ErrorCodeUnknown
